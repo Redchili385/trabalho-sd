@@ -25,6 +25,14 @@ public final class Grpc {
      * <code>SUCCESS = 1;</code>
      */
     SUCCESS(1),
+    /**
+     * <code>ERROR_NE = 2;</code>
+     */
+    ERROR_NE(2),
+    /**
+     * <code>ERROR_WV = 3;</code>
+     */
+    ERROR_WV(3),
     UNRECOGNIZED(-1),
     ;
 
@@ -36,6 +44,14 @@ public final class Grpc {
      * <code>SUCCESS = 1;</code>
      */
     public static final int SUCCESS_VALUE = 1;
+    /**
+     * <code>ERROR_NE = 2;</code>
+     */
+    public static final int ERROR_NE_VALUE = 2;
+    /**
+     * <code>ERROR_WV = 3;</code>
+     */
+    public static final int ERROR_WV_VALUE = 3;
 
 
     public final int getNumber() {
@@ -64,6 +80,8 @@ public final class Grpc {
       switch (value) {
         case 0: return ERROR;
         case 1: return SUCCESS;
+        case 2: return ERROR_NE;
+        case 3: return ERROR_WV;
         default: return null;
       }
     }
@@ -3976,14 +3994,15 @@ public final class Grpc {
       "(\0162\013.StatusCode\022\034\n\005value\030\002 \001(\0132\r.ValueRe" +
       "quest\"8\n\030DeleteWithVersionRequest\022\013\n\003key" +
       "\030\001 \001(\003\022\017\n\007version\030\002 \001(\003\"\031\n\nKeyMessage\022\013\n" +
-      "\003key\030\001 \001(\003*$\n\nStatusCode\022\t\n\005ERROR\020\000\022\013\n\007S" +
-      "UCCESS\020\0012\363\001\n\013GrpcService\022$\n\010SetValue\022\013.S" +
-      "etRequest\032\t.Response\"\000\022$\n\010GetValue\022\013.Key" +
-      "Message\032\t.Response\"\000\022$\n\010DelValue\022\013.KeyMe" +
-      "ssage\032\t.Response\"\000\022=\n\023DelValueWithVersio" +
-      "n\022\031.DeleteWithVersionRequest\032\t.Response\"" +
-      "\000\0223\n\020TestAndSetValues\022\022.TestAndSetReques" +
-      "t\032\t.Response\"\000b\006proto3"
+      "\003key\030\001 \001(\003*@\n\nStatusCode\022\t\n\005ERROR\020\000\022\013\n\007S" +
+      "UCCESS\020\001\022\014\n\010ERROR_NE\020\002\022\014\n\010ERROR_WV\020\0032\363\001\n" +
+      "\013GrpcService\022$\n\010SetValue\022\013.SetRequest\032\t." +
+      "Response\"\000\022$\n\010GetValue\022\013.KeyMessage\032\t.Re" +
+      "sponse\"\000\022$\n\010DelValue\022\013.KeyMessage\032\t.Resp" +
+      "onse\"\000\022=\n\023DelValueWithVersion\022\031.DeleteWi" +
+      "thVersionRequest\032\t.Response\"\000\0223\n\020TestAnd" +
+      "SetValues\022\022.TestAndSetRequest\032\t.Response" +
+      "\"\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
