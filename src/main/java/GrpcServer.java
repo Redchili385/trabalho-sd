@@ -27,7 +27,7 @@ public class GrpcServer {
         GrpcServer server = new GrpcServer();
         server.start();
 
-        System.out.println("Server connected to 9090 port");
+        System.out.println("Server connected to "+PORT+" port");
         server.blockUntilShutdown();
     }
 }

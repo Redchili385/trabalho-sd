@@ -3,6 +3,8 @@ syntax="proto3";
 enum StatusCode {
   ERROR = 0;
   SUCCESS = 1;
+  ERROR_NE = 2;
+  ERROR_WV = 3;
 }
 
 message ValueRequest {
