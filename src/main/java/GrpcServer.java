@@ -1,14 +1,19 @@
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 public class GrpcServer {
     private static final int PORT = 9090;
     private Server server;
 
     public void start() throws IOException {
+        ExecutorService threadPool = Executors.newFixedThreadPool(16);
+
         server = ServerBuilder.forPort(PORT)
                 .addService(new GrpcServiceImpl())
+                .executor(threadPool)
                 .build()
                 .start();
 
