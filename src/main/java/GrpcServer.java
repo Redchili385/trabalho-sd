@@ -9,7 +9,7 @@ public class GrpcServer {
     private Server server;
 
     public void start() throws IOException {
-        ExecutorService threadPool = Executors.newFixedThreadPool(16);
+        ExecutorService threadPool = Executors.newCachedThreadPool();
 
         server = ServerBuilder.forPort(PORT)
                 .addService(new GrpcServiceImpl())

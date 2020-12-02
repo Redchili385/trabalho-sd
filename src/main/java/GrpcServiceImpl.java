@@ -1,8 +1,8 @@
 import io.grpc.stub.StreamObserver;
-import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase {
-    private Hashtable<Long, ValueModel> values = new Hashtable<>();
+    private ConcurrentHashMap<Long, ValueModel> values = new ConcurrentHashMap<>();
 
     @Override
     public void setValue(Grpc.SetRequest request, StreamObserver<Grpc.Response> responseObserver) {
