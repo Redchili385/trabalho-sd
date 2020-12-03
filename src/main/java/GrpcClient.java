@@ -17,12 +17,14 @@ import io.grpc.StatusRuntimeException;
 
 public class GrpcClient {
 
+    private static GrpcServiceGrpc.GrpcServiceBlockingStub blockingStub = getBlockingStub();
+
     public static void main(String[] args){
 
         JFrame frame = new JFrame();
         frame.setTitle("gRPC Client GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1500,720);
+        frame.setSize(1500,580);
         frame.setLayout(new FlowLayout());
         
         frame.getContentPane().setBackground(new Color(211,211,211));
@@ -61,10 +63,14 @@ public class GrpcClient {
         catch(NumberFormatException e){
             throw new IllegalArgumentException("Formato incorreto da entrada 0");
         }
+        Grpc.Response response = getValue(key);
+        return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+    }
+
+    static Grpc.Response getValue(Long key){
         Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(key).build();
         try{
-            Grpc.Response response = getBlockingStub().getValue(request);
-            return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+            return blockingStub.getValue(request);
         }
         catch(StatusRuntimeException e){
             printGrpcException(e);
@@ -91,11 +97,15 @@ public class GrpcClient {
         ByteString value = ByteString.copyFrom(valueString, Charset.defaultCharset());
         long timestamp = (new Date()).getTime();
 
+        Grpc.Response response = setValue(key, value, timestamp);
+        return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+    }
+
+    static Grpc.Response setValue(Long key, ByteString value, Long timestamp){
         Grpc.SetRequest request = Grpc.SetRequest.newBuilder().setKey(key).setData(value).setTimestamp(timestamp).build();
         try{
-            System.out.println(request.toString());
-            Grpc.Response response = getBlockingStub().setValue(request);
-            return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+            //System.out.println(request.toString());
+            return blockingStub.setValue(request);
         }
         catch(StatusRuntimeException e){
             printGrpcException(e);
@@ -116,10 +126,15 @@ public class GrpcClient {
         catch(NumberFormatException e){
             throw new IllegalArgumentException("Formato incorreto da entrada 0");
         }
+        Grpc.Response response = delValue(key);
+        return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+       
+    }
+
+    static Grpc.Response delValue(Long key){
         Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(key).build();
         try{
-            Grpc.Response response = getBlockingStub().delValue(request);
-            return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+            return blockingStub.delValue(request);
         }
         catch(StatusRuntimeException e){
             printGrpcException(e);
@@ -144,10 +159,14 @@ public class GrpcClient {
         catch(NumberFormatException e){
             throw new IllegalArgumentException("Formato incorreto da entrada 0 ou 1");
         }
+        Grpc.Response response = delValueWithVersion(key, version);
+        return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+    }
+
+    static Grpc.Response delValueWithVersion(Long key, Long version){
         Grpc.DeleteWithVersionRequest request = Grpc.DeleteWithVersionRequest.newBuilder().setKey(key).setVersion(version).build();
         try{
-            Grpc.Response response = getBlockingStub().delValueWithVersion(request);
-            return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+            return blockingStub.delValueWithVersion(request);
         }
         catch(StatusRuntimeException e){
             printGrpcException(e);
@@ -177,13 +196,17 @@ public class GrpcClient {
         ByteString value = ByteString.copyFrom(valueString, Charset.defaultCharset());
         long timestamp = (new Date()).getTime();
 
+        Grpc.Response response = testAndSetValue(key, version, timestamp, value);
+        return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+    }
+
+    static Grpc.Response testAndSetValue(Long key, Long version, Long timestamp, ByteString value){
         Grpc.TestAndSetRequest request = Grpc.TestAndSetRequest.newBuilder().setKey(key)
             .setValue(Grpc.ValueRequest.newBuilder().setVersion(version+1L).setTimestamp(timestamp).setData(value).build())
             .setVersion(version).build();
         try{
-            System.out.println(request.toString());
-            Grpc.Response response = getBlockingStub().testAndSetValues(request);
-            return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
+            //System.out.println(request.toString());
+            return blockingStub.testAndSetValues(request);
         }
         catch(StatusRuntimeException e){
             printGrpcException(e);
@@ -192,6 +215,9 @@ public class GrpcClient {
     }
 
     static public String parseValueRequest(Grpc.ValueRequest request){
+        if(request.getData().isEmpty()){
+            return "NULL";
+        }
         SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return "( Version: "+request.getVersion()+", Timestamp: "+
                 newFormat.format(new Date(request.getTimestamp()))+", Data: "+ request.getData().toString(Charset.defaultCharset()) + ")";

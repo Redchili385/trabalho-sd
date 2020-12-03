@@ -47,7 +47,7 @@ public class functionPanel extends JPanel{
 
         outputStrings = new ArrayList<>(outputs);  
         for(String output: outputs){
-            JLabel labelOutput = new JLabel(output);
+            JLabel labelOutput = new JLabel(output+": ");
             labelOutput.setFont(boldFont);
             outputLabels.add(labelOutput);
             this.add(labelOutput);

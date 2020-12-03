@@ -12,7 +12,7 @@ public class ValueModel implements Serializable{
     private byte[] data;
 
     public ValueModel(){
-        version = 0;
+        version = 1L;
         timestamp = (new Date()).getTime();
         data = new byte[]{}; 
     }
