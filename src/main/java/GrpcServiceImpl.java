@@ -14,7 +14,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase {
     private ConcurrentHashMap<Long, ValueModel> values = loadHashMap(hashPath);
     private Boolean canStore = true;
     private Date horaDeInicio = new Date();
-    private long intervaloEntreSalvamentos = 20000; //ms
+    private long intervaloEntreSalvamentos = 5000; //ms
     private SaveTimer timer = new SaveTimer("save timer", new TimerTask() {
 
         @Override
