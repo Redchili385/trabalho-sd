@@ -15,12 +15,13 @@ public class StateMachineImpl extends BaseStateMachine{
 
     @Override
     public CompletableFuture<Message> query(Message request) {
+        System.out.println("Receiving message "+ request.toString()+"from client on StateMachine");
         final String[] opKey = request.getContent().toString(Charset.defaultCharset()).split(":");
         ByteString result = null;
         if(opKey.length > 1 && opKey[0].equals("get")){
             result = values.get(Long.parseLong(opKey[1])).toRatisByteString();
         }
-        LOG.debug("{}: {} = {}", opKey[0], opKey[1], result.toString());
+        //LOG.debug("{}: {} = {}", opKey[0], opKey[1], result.toString());
         return CompletableFuture.completedFuture(Message.valueOf(result));
     }
 

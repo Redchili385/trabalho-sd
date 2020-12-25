@@ -39,7 +39,7 @@ public class GrpcClient {
     }
 
     private static GrpcServiceGrpc.GrpcServiceBlockingStub getBlockingStub(){
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:9090").usePlaintext().build();
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:"+GrpcServer.grpcPort).usePlaintext().build();
         return GrpcServiceGrpc.newBlockingStub(channel);
     }
 

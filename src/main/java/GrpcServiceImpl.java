@@ -207,7 +207,13 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
     }
 
     private RaftClient createRaftClient() {
-        final RaftGroup raftGroup = GrpcServer.getRaftGroup(null);
+        final RaftGroup raftGroup = GrpcServer.getRaftGroup("p1");
+
+        if(raftGroup == null){
+            throw new IllegalArgumentException("Grupo RAFT não pode ser nulo");
+        }
+
+        System.out.println(raftGroup.getGroupId());
 
         RaftProperties raftProperties = new RaftProperties();
 

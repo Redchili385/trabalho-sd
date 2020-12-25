@@ -13,7 +13,11 @@ public class RaftHashClient{
     }
 
     public ValueModel get(Long key){
-        return ioExceptionToNull(() -> new ValueModel(client.sendReadOnly(Message.valueOf("get:"+key)).getMessage().getContent()));
+        System.out.println("Sending GET "+key+" from Ratis Client/GRPC server to Ratis Server");
+        System.out.println(client.getId().toString());
+        ValueModel v = ioExceptionToNull(() -> new ValueModel(client.sendReadOnly(Message.valueOf("get:"+key)).getMessage().getContent()));
+        System.out.println("Value Received GET "+key+":"+v.toString());
+        return v;
     }
 
     public ValueModel remove(Long key){

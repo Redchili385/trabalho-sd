@@ -26,7 +26,25 @@ public class GrpcServer {
     private static Map<String,InetSocketAddress> id2addr = createId2Addr();
     private Server server;
     private static RaftServer raftServer;
+    public static int grpcPort = 9000;
+    public static RaftGroup raftGroup = null;
 
+    public static void main(String[] args) throws InterruptedException, IOException {
+        if(args.length == 0){
+            args = new String[]{"p1"};
+        }
+        GrpcServer server = new GrpcServer();
+        //int port = id2addr.get(args[0]).getPort() + 45;
+        int port = grpcPort;
+        raftServer = createRaftServer(args[0]);
+        raftServer.start();
+        server.start(port);
+
+        System.out.println("Server connected to "+port+" port");
+        server.blockUntilShutdown();
+    }
+   
+   
     public void start(int port) throws IOException {
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -44,21 +62,6 @@ public class GrpcServer {
         }
 
         server.awaitTermination();
-    }
-
-    public static void main(String[] args)
-            throws InterruptedException, IOException {
-        if(args.length == 0){
-            args = new String[]{"p1"};
-        }
-        GrpcServer server = new GrpcServer();
-        int port = id2addr.get(args[0]).getPort();
-        server.start(port + 45);
-        raftServer = createRaftServer(args[0]);
-        raftServer.start();
-
-        System.out.println("Server connected to "+port+" port");
-        server.blockUntilShutdown();
     }
 
     public static RaftServer createRaftServer(String id) throws IOException{
@@ -88,7 +91,9 @@ public class GrpcServer {
             verifyExistance(id, addresses);
         }
 
-        return RaftGroup.valueOf(RaftGroupId.valueOf(ByteString.copyFromUtf8(raftGroupId)), addresses);
+        raftGroup = RaftGroup.valueOf(RaftGroupId.valueOf(ByteString.copyFromUtf8(raftGroupId)), addresses);
+
+        return raftGroup;
     }
 
 
