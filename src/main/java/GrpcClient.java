@@ -18,6 +18,7 @@ import io.grpc.StatusRuntimeException;
 public class GrpcClient {
 
     private static GrpcServiceGrpc.GrpcServiceBlockingStub blockingStub = getBlockingStub();
+    public static Charset charset = Charset.forName("iso8859-1");
 
     public static void main(String[] args){
 
@@ -39,7 +40,7 @@ public class GrpcClient {
     }
 
     private static GrpcServiceGrpc.GrpcServiceBlockingStub getBlockingStub(){
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:"+GrpcServer.grpcPort).usePlaintext().build();
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:"+GrpcServer.grpcBasePort).usePlaintext().build();
         return GrpcServiceGrpc.newBlockingStub(channel);
     }
 
@@ -94,7 +95,7 @@ public class GrpcClient {
             throw new IllegalArgumentException("Formato incorreto da entrada 0");
         }
 
-        ByteString value = ByteString.copyFrom(valueString, Charset.defaultCharset());
+        ByteString value = ByteString.copyFrom(valueString, charset);
         long timestamp = (new Date()).getTime();
 
         Grpc.Response response = setValue(key, value, timestamp);
@@ -193,7 +194,7 @@ public class GrpcClient {
             throw new IllegalArgumentException("Formato incorreto da entrada 0 ou 2");
         }
 
-        ByteString value = ByteString.copyFrom(valueString, Charset.defaultCharset());
+        ByteString value = ByteString.copyFrom(valueString, charset);
         long timestamp = (new Date()).getTime();
 
         Grpc.Response response = testAndSetValue(key, version, timestamp, value);
@@ -220,7 +221,7 @@ public class GrpcClient {
         }
         SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return "( Version: "+request.getVersion()+", Timestamp: "+
-                newFormat.format(new Date(request.getTimestamp()))+", Data: "+ request.getData().toString(Charset.defaultCharset()) + ")";
+                newFormat.format(new Date(request.getTimestamp()))+", Data: "+ request.getData().toString(charset) + ")";
     }
     
 }

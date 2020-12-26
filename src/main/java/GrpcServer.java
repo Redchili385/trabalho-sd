@@ -7,6 +7,7 @@ import org.apache.ratis.protocol.RaftPeerId;
 import org.apache.ratis.server.RaftServer;
 import org.apache.ratis.server.RaftServerConfigKeys;
 import org.apache.ratis.thirdparty.com.google.protobuf.ByteString;
+import org.apache.ratis.util.LifeCycle;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -21,12 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class GrpcServer {
     private static Map<String,InetSocketAddress> id2addr = createId2Addr();
     private Server server;
     private static RaftServer raftServer;
-    public static int grpcPort = 9000;
+    public static int grpcBasePort = 9000;
     public static RaftGroup raftGroup = null;
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -35,12 +37,18 @@ public class GrpcServer {
         }
         GrpcServer server = new GrpcServer();
         //int port = id2addr.get(args[0]).getPort() + 45;
-        int port = grpcPort;
+        int port = grpcBasePort + id2addr.get(args[0]).getPort() - 3000;
         raftServer = createRaftServer(args[0]);
         raftServer.start();
         server.start(port);
 
         System.out.println("Server connected to "+port+" port");
+
+        while(raftServer.getLifeCycleState() != LifeCycle.State.CLOSED) {
+            TimeUnit.SECONDS.sleep(1);
+            //System.out.println("Ratis Cycle State");
+        }
+
         server.blockUntilShutdown();
     }
    
@@ -69,9 +77,9 @@ public class GrpcServer {
         RaftPeerId myId = RaftPeerId.valueOf(id);
 
         RaftProperties properties = new RaftProperties();
-        properties.setInt(GrpcConfigKeys.OutputStream.RETRY_TIMES_KEY, Integer.MAX_VALUE);
-        GrpcConfigKeys.Server.setPort(properties, 1000);
-        RaftServerConfigKeys.setStorageDir(properties, Collections.singletonList(new File("/tmp/" + myId)));
+        properties.setInt(GrpcConfigKeys.OutputStream.RETRY_TIMES_KEY, Integer.MAX_VALUE);//10);//
+        GrpcConfigKeys.Server.setPort(properties, id2addr.get(id).getPort());
+        RaftServerConfigKeys.setStorageDir(properties, Collections.singletonList(new File(System.getProperty("user.dir")+"/tmp/" + myId)));
         
         return RaftServer.newBuilder()
                 .setServerId(myId)

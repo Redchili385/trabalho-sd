@@ -213,7 +213,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
             throw new IllegalArgumentException("Grupo RAFT não pode ser nulo");
         }
 
-        System.out.println(raftGroup.getGroupId());
+        //System.out.println(raftGroup.getGroupId());
 
         RaftProperties raftProperties = new RaftProperties();
 

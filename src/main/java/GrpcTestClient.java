@@ -9,7 +9,7 @@ import com.google.protobuf.ByteString;
 
 public class GrpcTestClient {
     
-    public static Charset charset = Charset.defaultCharset();
+    public static Charset charset = Charset.forName("iso8859-1");
     public static void main(String[] args){
         
         //Creating first values to send

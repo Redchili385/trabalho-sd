@@ -37,10 +37,9 @@ public class ValueModel implements Serializable{
         data = value.getData().toByteArray();
     }
 
-    public ValueModel(ByteString byteString){
+    public ValueModel(byte[] bytes){
         try {
-            byte b[] = byteString.toByteArray(); 
-            ByteArrayInputStream bi = new ByteArrayInputStream(b);
+            ByteArrayInputStream bi = new ByteArrayInputStream(bytes);
             ObjectInputStream si = new ObjectInputStream(bi);
             ValueModel obj = (ValueModel) si.readObject();
             version = obj.version;
@@ -48,13 +47,18 @@ public class ValueModel implements Serializable{
             data = obj.data;
         } catch (Exception e) {
             System.out.println(e);
-            throw new IllegalArgumentException("Falha na Desserialização");
+            e.printStackTrace();
+            System.out.println("Falha na Desserialização");
         }
     }
 
+    public ValueModel(ByteString byteString){
+        this(byteString.toByteArray());
+    }
+
     public ValueModel(org.apache.ratis.thirdparty.com.google.protobuf.ByteString content) {
-        this(ByteString.copyFrom(content.toByteArray()));
-	}
+        this(content.toByteArray());
+    }
 
 	public long getVersion(){
         return version;
@@ -87,13 +91,13 @@ public class ValueModel implements Serializable{
                                 .build();
     }
 
-    public ByteString toByteString(){
+    public byte[] toByteArray(){
         try {
             ByteArrayOutputStream bo = new ByteArrayOutputStream();
             ObjectOutputStream so = new ObjectOutputStream(bo);
             so.writeObject(this);
             so.flush();
-            return ByteString.copyFrom(bo.toByteArray());
+            return bo.toByteArray();
         } 
         catch (Exception e) {
             System.out.println(e);
@@ -101,7 +105,11 @@ public class ValueModel implements Serializable{
         }
     }
 
+    public ByteString toByteString(){
+        return ByteString.copyFrom(toByteArray());
+    }
+
     public org.apache.ratis.thirdparty.com.google.protobuf.ByteString toRatisByteString(){
-        return org.apache.ratis.thirdparty.com.google.protobuf.ByteString.copyFrom(toByteString().toByteArray());
+        return org.apache.ratis.thirdparty.com.google.protobuf.ByteString.copyFrom(toByteArray());
     }
 }
