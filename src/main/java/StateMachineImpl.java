@@ -1,5 +1,4 @@
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +15,7 @@ public class StateMachineImpl extends BaseStateMachine{
 
     @Override
     public CompletableFuture<Message> query(Message request) {
-        //System.out.println("Receiving message Query"+ request.getContent().toString(charset) +" from client on StateMachine");
+        System.out.println("Receiving message Query"+ request.getContent().toString(charset) +" from client on StateMachine");
         final String[] opKey = request.getContent().toString(charset).split(":");
         ByteString result = ByteString.copyFrom(opKey[0] + ":",charset);
         ValueModel value = null;
@@ -40,7 +39,7 @@ public class StateMachineImpl extends BaseStateMachine{
 
     @Override
     public CompletableFuture<Message> applyTransaction(TransactionContext trx) {
-        //System.out.println("Receiving message ApplyTransaction "+ trx.getLogEntry().getStateMachineLogEntry().getLogData().toString(charset)+" from client on StateMachine");
+        System.out.println("Receiving message ApplyTransaction "+ trx.getLogEntry().getStateMachineLogEntry().getLogData().toString(charset)+" from client on StateMachine");
         final RaftProtos.LogEntryProto entry = trx.getLogEntry();
         final String[] opKeyValue = entry.getStateMachineLogEntry().getLogData().toString(charset).split(":");
         ByteString result = ByteString.copyFrom(opKeyValue[0] + ":",charset);

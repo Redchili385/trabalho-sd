@@ -65,7 +65,7 @@ public class functionPanel extends JPanel{
 
     private void updateOutputLabels(List<String> outputs){
         System.out.println(outputs.toString());
-        System.out.println(outputStrings.toString());
+        //System.out.println(outputStrings.toString());
         int outputsSize = outputLabels.size();  
         for(int i = 0; i < outputsSize; i++){
             JLabel labelOutput = outputLabels.get(i);

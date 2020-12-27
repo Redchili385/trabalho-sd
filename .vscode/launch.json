@@ -22,7 +22,8 @@
             "name": "Launch GrpcServer",
             "request": "launch",
             "mainClass": "GrpcServer",
-            "projectName": "trabalho1"
+            "projectName": "trabalho1",
+            "args": "p1"
         },
         {
             "type": "java",

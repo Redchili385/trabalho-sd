@@ -28,7 +28,7 @@ public class GrpcServer {
     private static Map<String,InetSocketAddress> id2addr = createId2Addr();
     private Server server;
     private static RaftServer raftServer;
-    public static int grpcBasePort = 9000;
+    
     public static RaftGroup raftGroup = null;
 
     public static void main(String[] args) throws InterruptedException, IOException {
@@ -36,8 +36,12 @@ public class GrpcServer {
             args = new String[]{"p1"};
         }
         GrpcServer server = new GrpcServer();
-        //int port = id2addr.get(args[0]).getPort() + 45;
-        int port = grpcBasePort + id2addr.get(args[0]).getPort() - 3000;
+        InetSocketAddress socketAddr = id2addr.get(args[0]);
+        if(socketAddr == null){
+            System.out.println("Servidor "+args[0]+" não mapeado para o grupo Ratis. Nomes disponíveis: "+SharedInfo.listServerNames());
+            return;
+        }
+        int port = SharedInfo.grpcBasePort + socketAddr.getPort() - SharedInfo.ratisBasePort;
         raftServer = createRaftServer(args[0]);
         raftServer.start();
         server.start(port);
@@ -57,7 +61,7 @@ public class GrpcServer {
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
         server = ServerBuilder.forPort(port)
-                .addService(new GrpcServiceImpl())
+                .addService(new GrpcServiceImpl(port))
                 .executor(threadPool)
                 .build()
                 .start();
@@ -68,7 +72,6 @@ public class GrpcServer {
         if (server == null) {
             return;
         }
-
         server.awaitTermination();
     }
 
@@ -77,7 +80,7 @@ public class GrpcServer {
         RaftPeerId myId = RaftPeerId.valueOf(id);
 
         RaftProperties properties = new RaftProperties();
-        properties.setInt(GrpcConfigKeys.OutputStream.RETRY_TIMES_KEY, Integer.MAX_VALUE);//10);//
+        properties.setInt(GrpcConfigKeys.OutputStream.RETRY_TIMES_KEY, Integer.MAX_VALUE);
         GrpcConfigKeys.Server.setPort(properties, id2addr.get(id).getPort());
         RaftServerConfigKeys.setStorageDir(properties, Collections.singletonList(new File(System.getProperty("user.dir")+"/tmp/" + myId)));
         
@@ -106,10 +109,11 @@ public class GrpcServer {
 
 
     public static Map<String,InetSocketAddress> createId2Addr(){
+        ServerInfo[] addresses = SharedInfo.listServers;
         Map<String,InetSocketAddress> id2addr = new HashMap<>();
-        id2addr.put("p1", new InetSocketAddress("127.0.0.1", 3000));
-        id2addr.put("p2", new InetSocketAddress("127.0.0.1", 3500));
-        id2addr.put("p3", new InetSocketAddress("127.0.0.1", 4000));
+        for(ServerInfo addr : addresses){
+            id2addr.put(addr.getName(), new InetSocketAddress(addr.getRatisAddress(), addr.getRatisPort()));
+        }
         return id2addr;
     }
 
@@ -126,7 +130,6 @@ public class GrpcServer {
         if (addresses.stream().noneMatch(p -> p.getId().equals(myId)))
         {
             System.out.println("Identificador " + id + " é inválido.");
-            throw new IllegalArgumentException("Identificador " + id + " é inválido.");
         }
     }
 }

@@ -21,10 +21,11 @@ import org.apache.ratis.thirdparty.com.google.protobuf.ByteString;
 public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase implements InternalNotifyOnServerBuild {
     private String hashPath = "./hashmap.txt";
     //private ConcurrentHashMap<Long, ValueModel> values = loadHashMap(hashPath);
-    private RaftClient client = createRaftClient();
-    private RaftHashClient values = new RaftHashClient(client);
+    private RaftClient client = null;
+    private RaftHashClient values = null;
     private Server grpcServer = null;
     private Boolean canStore = true;
+    private int grpcPort;
     /*
      * private Date horaDeInicio = new Date(); private long
      * intervaloEntreSalvamentos = 5000; //ms private SaveTimer timer = new
@@ -34,6 +35,11 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
      * Date()).getTime() - horaDeInicio.getTime()); } }, 0,
      * intervaloEntreSalvamentos );
      */
+
+    public GrpcServiceImpl(int grpcPort){
+        super();
+        this.grpcPort = grpcPort;
+    }
 
     @Override
     public void setValue(Grpc.SetRequest request, StreamObserver<Grpc.Response> responseObserver) {
@@ -207,24 +213,20 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
     }
 
     private RaftClient createRaftClient() {
-        final RaftGroup raftGroup = GrpcServer.getRaftGroup("p1");
-
+        final RaftGroup raftGroup = GrpcServer.getRaftGroup(SharedInfo.getProcessByGrpcPort(grpcPort).getName());
         if(raftGroup == null){
             throw new IllegalArgumentException("Grupo RAFT não pode ser nulo");
         }
-
-        //System.out.println(raftGroup.getGroupId());
-
         RaftProperties raftProperties = new RaftProperties();
-
         return RaftClient.newBuilder().setProperties(raftProperties).setRaftGroup(raftGroup)
                 .setClientRpc(new GrpcFactory(new Parameters()).newRaftClientRpc(ClientId.randomId(), raftProperties))
                 .build();
-
     }
 
     @Override
     public void notifyOnBuild(Server server) {
         grpcServer = server;
+        client = createRaftClient();
+        values = new RaftHashClient(client);
     }
 }

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 
 import com.google.protobuf.ByteString;
@@ -17,30 +18,43 @@ import io.grpc.StatusRuntimeException;
 
 public class GrpcClient {
 
+    private static Integer currentServerPort = SharedInfo.grpcBasePort;
     private static GrpcServiceGrpc.GrpcServiceBlockingStub blockingStub = getBlockingStub();
     public static Charset charset = Charset.forName("iso8859-1");
+    private static ServerInfo[] servers = SharedInfo.listServers;
 
     public static void main(String[] args){
 
         JFrame frame = new JFrame();
         frame.setTitle("gRPC Client GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1500,580);
+        frame.setSize(1500,600);
         frame.setLayout(new FlowLayout());
         
         frame.getContentPane().setBackground(new Color(211,211,211));
-        
+
         frame.add(new functionPanel("Set Value: ", new ArrayList<String>(Arrays.asList("Key","Data")), new ArrayList<String>(Arrays.asList("Status","Value")), l -> setValue(l)));
         frame.add(new functionPanel("Get Value: ", new ArrayList<String>(Arrays.asList("Key")), new ArrayList<String>(Arrays.asList("Status","Value")), l -> getValue(l)));
         frame.add(new functionPanel("Delete Value: ", new ArrayList<String>(Arrays.asList("Key")), new ArrayList<String>(Arrays.asList("Status","Value")), l -> delValue(l)));
         frame.add(new functionPanel("Delete Value With Version: ", new ArrayList<String>(Arrays.asList("Key","Version")), new ArrayList<String>(Arrays.asList("Status","Value")), l -> delValueWithVersion(l)));
         frame.add(new functionPanel("Test and Set Value: ", new ArrayList<String>(Arrays.asList("Key","Value","Version")), new ArrayList<String>(Arrays.asList("Status","Value")), l -> testAndSetValue(l)));
     
+        JComboBox<ServerInfo> comboServer = new JComboBox<>(servers);
+        comboServer.addActionListener(e -> {
+            currentServerPort = ((ServerInfo)comboServer.getSelectedItem()).getGrpcPort();
+            blockingStub = getBlockingStub();
+        });
+
+        frame.add(comboServer);
+        currentServerPort = ((ServerInfo)comboServer.getSelectedItem()).getGrpcPort();
+        blockingStub = getBlockingStub();
+
+       
         frame.setVisible(true);
     }
 
     private static GrpcServiceGrpc.GrpcServiceBlockingStub getBlockingStub(){
-        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:"+GrpcServer.grpcBasePort).usePlaintext().build();
+        ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:"+currentServerPort).usePlaintext().build();
         return GrpcServiceGrpc.newBlockingStub(channel);
     }
 
@@ -65,6 +79,9 @@ public class GrpcClient {
             throw new IllegalArgumentException("Formato incorreto da entrada 0");
         }
         Grpc.Response response = getValue(key);
+        if(response == null){
+            return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
+        }
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
@@ -74,7 +91,8 @@ public class GrpcClient {
             return blockingStub.getValue(request);
         }
         catch(StatusRuntimeException e){
-            printGrpcException(e);
+            //printGrpcException(e);
+            System.out.println("Erro de conexão com o servidor com porta: "+currentServerPort);
             return null;
         }
     }
@@ -99,6 +117,9 @@ public class GrpcClient {
         long timestamp = (new Date()).getTime();
 
         Grpc.Response response = setValue(key, value, timestamp);
+        if(response == null){
+            return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
+        }
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
@@ -109,7 +130,7 @@ public class GrpcClient {
             return blockingStub.setValue(request);
         }
         catch(StatusRuntimeException e){
-            printGrpcException(e);
+            System.out.println("Erro de conexão com o servidor com porta: "+currentServerPort);
             return null;
         }
     }
@@ -128,6 +149,9 @@ public class GrpcClient {
             throw new IllegalArgumentException("Formato incorreto da entrada 0");
         }
         Grpc.Response response = delValue(key);
+        if(response == null){
+            return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
+        }
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
        
     }
@@ -138,7 +162,7 @@ public class GrpcClient {
             return blockingStub.delValue(request);
         }
         catch(StatusRuntimeException e){
-            printGrpcException(e);
+            System.out.println("Erro de conexão com o servidor com porta: "+currentServerPort);
             return null;
         }
     }
@@ -161,6 +185,9 @@ public class GrpcClient {
             throw new IllegalArgumentException("Formato incorreto da entrada 0 ou 1");
         }
         Grpc.Response response = delValueWithVersion(key, version);
+        if(response == null){
+            return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
+        }
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
@@ -170,7 +197,7 @@ public class GrpcClient {
             return blockingStub.delValueWithVersion(request);
         }
         catch(StatusRuntimeException e){
-            printGrpcException(e);
+            System.out.println("Erro de conexão com o servidor com porta: "+currentServerPort);
             return null;
         }
     }
@@ -198,6 +225,9 @@ public class GrpcClient {
         long timestamp = (new Date()).getTime();
 
         Grpc.Response response = testAndSetValue(key, version, timestamp, value);
+        if(response == null){
+            return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
+        }
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
@@ -210,7 +240,7 @@ public class GrpcClient {
             return blockingStub.testAndSetValues(request);
         }
         catch(StatusRuntimeException e){
-            printGrpcException(e);
+            System.out.println("Erro de conexão com o servidor com porta: "+currentServerPort);
             return null;
         }
     }
