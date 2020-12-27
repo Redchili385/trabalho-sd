@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,7 +11,7 @@ import org.apache.ratis.thirdparty.com.google.protobuf.ByteString;
 
 public class StateMachineImpl extends BaseStateMachine{
     
-    private ConcurrentHashMap<Long, ValueModel> values = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<BigInteger, ValueModel> values = new ConcurrentHashMap<>();
     public static Charset charset = Charset.forName("iso8859-1");
 
     @Override
@@ -21,7 +22,7 @@ public class StateMachineImpl extends BaseStateMachine{
         ValueModel value = null;
         try{
             if(opKey.length > 1 && opKey[0].equals("get")){
-                value = values.get(Long.parseLong(opKey[1]));
+                value = values.get(new BigInteger(ByteString.copyFrom(opKey[1], charset).toByteArray()));
             }
         }
         catch(Exception e){
@@ -47,7 +48,7 @@ public class StateMachineImpl extends BaseStateMachine{
         try{
             if(opKeyValue.length == 2){
                 if(opKeyValue[0].equals("remove")){
-                    value = values.remove(Long.parseLong(opKeyValue[1]));
+                    value = values.remove(new BigInteger(ByteString.copyFrom(opKeyValue[1], charset).toByteArray()));
                 }
             }
             else if(opKeyValue.length == 3){
@@ -55,13 +56,20 @@ public class StateMachineImpl extends BaseStateMachine{
                 String valueString = ByteString.copyFrom(opKeyValue[2],charset).toString(charset);
                 //System.out.println(valueString);
                 if(!valueString.equals("null")){
-                    if(opKeyValue[0].equals("put")){
-                        value = values.put(Long.parseLong(opKeyValue[1]), new ValueModel(ByteString.copyFrom(opKeyValue[2], charset)));
+                    if(opKeyValue[0].equals("put")){ //if Present and with correct version
+                        ValueModel newValue = new ValueModel(ByteString.copyFrom(opKeyValue[2], charset));
+                        //value = values.put(new BigInteger(ByteString.copyFrom(opKeyValue[1], charset).toByteArray()), newValue);
+                        value = values.computeIfPresent(new BigInteger(ByteString.copyFrom(opKeyValue[1], charset).toByteArray()), (k,v) -> {
+                            if(v.getVersion() + 1L == newValue.getVersion()){
+                                return newValue;
+                            }
+                            return v;
+                        });
                     }
                     else if(opKeyValue[0].equals("putIfAbsent")){
                         //System.out.println(opKeyValue[2]);
                         //System.out.println(ByteString.copyFrom(opKeyValue[2], charset).toString());
-                        value = values.putIfAbsent(Long.parseLong(opKeyValue[1]), new ValueModel(ByteString.copyFrom(opKeyValue[2], charset)));
+                        value = values.putIfAbsent(new BigInteger(ByteString.copyFrom(opKeyValue[1], charset).toByteArray()), new ValueModel(ByteString.copyFrom(opKeyValue[2], charset)));
                     }
                 }
             }

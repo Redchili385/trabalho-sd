@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
@@ -17,24 +18,24 @@ public class RaftHashClient{
         client = c;
     }
 
-    public ValueModel get(Long key){
+    public ValueModel get(BigInteger key){
         System.out.println("Sending GET "+key+" from Ratis Client/GRPC server to Ratis Server");
         return ioExceptionToNull(() -> {
             return parseReply(client.sendReadOnly(Message.valueOf("get:"+key)));
         });
     }
 
-    public ValueModel remove(Long key){
+    public ValueModel remove(BigInteger key){
         System.out.println("Sending Remove "+key+" from Ratis Client/GRPC server to Ratis Server");
         return ioExceptionToNull(() -> parseReply(client.send(Message.valueOf("remove:"+key))));
     }
 
-    public ValueModel put(Long key, ValueModel value){
+    public ValueModel put(BigInteger key, ValueModel value){
         System.out.println("Sending put "+key+" from Ratis Client/GRPC server to Ratis Server");
         return ioExceptionToNull(() -> parseReply(client.send(Message.valueOf(ByteString.copyFrom("put:"+key+":",charset).concat(value.toRatisByteString())))));
     }
 
-    public ValueModel putIfAbsent(Long key, ValueModel value){
+    public ValueModel putIfAbsent(BigInteger key, ValueModel value){
         System.out.println("Sending putIfAbsent "+key+" from Ratis Client/GRPC server to Ratis Server");
         return ioExceptionToNull(() -> {
             ByteString requestString = ByteString.copyFrom("putIfAbsent:"+key+":",charset).concat(value.toRatisByteString());

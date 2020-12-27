@@ -777,10 +777,10 @@ public final class Grpc {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
-    long getKey();
+    com.google.protobuf.ByteString getKey();
 
     /**
      * <code>.ValueRequest value = 2;</code>
@@ -816,6 +816,7 @@ public final class Grpc {
       super(builder);
     }
     private TestAndSetRequest() {
+      key_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -848,9 +849,9 @@ public final class Grpc {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
 
-              key_ = input.readInt64();
+              key_ = input.readBytes();
               break;
             }
             case 18: {
@@ -904,13 +905,13 @@ public final class Grpc {
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
-    private long key_;
+    private com.google.protobuf.ByteString key_;
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
     @java.lang.Override
-    public long getKey() {
+    public com.google.protobuf.ByteString getKey() {
       return key_;
     }
 
@@ -965,8 +966,8 @@ public final class Grpc {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (key_ != 0L) {
-        output.writeInt64(1, key_);
+      if (!key_.isEmpty()) {
+        output.writeBytes(1, key_);
       }
       if (value_ != null) {
         output.writeMessage(2, getValue());
@@ -983,9 +984,9 @@ public final class Grpc {
       if (size != -1) return size;
 
       size = 0;
-      if (key_ != 0L) {
+      if (!key_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, key_);
+          .computeBytesSize(1, key_);
       }
       if (value_ != null) {
         size += com.google.protobuf.CodedOutputStream
@@ -1010,8 +1011,8 @@ public final class Grpc {
       }
       Grpc.TestAndSetRequest other = (Grpc.TestAndSetRequest) obj;
 
-      if (getKey()
-          != other.getKey()) return false;
+      if (!getKey()
+          .equals(other.getKey())) return false;
       if (hasValue() != other.hasValue()) return false;
       if (hasValue()) {
         if (!getValue()
@@ -1031,8 +1032,7 @@ public final class Grpc {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getKey());
+      hash = (53 * hash) + getKey().hashCode();
       if (hasValue()) {
         hash = (37 * hash) + VALUE_FIELD_NUMBER;
         hash = (53 * hash) + getValue().hashCode();
@@ -1173,7 +1173,7 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        key_ = 0L;
+        key_ = com.google.protobuf.ByteString.EMPTY;
 
         if (valueBuilder_ == null) {
           value_ = null;
@@ -1264,7 +1264,7 @@ public final class Grpc {
 
       public Builder mergeFrom(Grpc.TestAndSetRequest other) {
         if (other == Grpc.TestAndSetRequest.getDefaultInstance()) return this;
-        if (other.getKey() != 0L) {
+        if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
           setKey(other.getKey());
         }
         if (other.hasValue()) {
@@ -1302,33 +1302,36 @@ public final class Grpc {
         return this;
       }
 
-      private long key_ ;
+      private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return The key.
        */
       @java.lang.Override
-      public long getKey() {
+      public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @param value The key to set.
        * @return This builder for chaining.
        */
-      public Builder setKey(long value) {
-        
+      public Builder setKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearKey() {
         
-        key_ = 0L;
+        key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
@@ -1540,10 +1543,10 @@ public final class Grpc {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
-    long getKey();
+    com.google.protobuf.ByteString getKey();
 
     /**
      * <code>int64 timestamp = 2;</code>
@@ -1570,6 +1573,7 @@ public final class Grpc {
       super(builder);
     }
     private SetRequest() {
+      key_ = com.google.protobuf.ByteString.EMPTY;
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -1603,9 +1607,9 @@ public final class Grpc {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
 
-              key_ = input.readInt64();
+              key_ = input.readBytes();
               break;
             }
             case 16: {
@@ -1651,13 +1655,13 @@ public final class Grpc {
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
-    private long key_;
+    private com.google.protobuf.ByteString key_;
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
     @java.lang.Override
-    public long getKey() {
+    public com.google.protobuf.ByteString getKey() {
       return key_;
     }
 
@@ -1697,8 +1701,8 @@ public final class Grpc {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (key_ != 0L) {
-        output.writeInt64(1, key_);
+      if (!key_.isEmpty()) {
+        output.writeBytes(1, key_);
       }
       if (timestamp_ != 0L) {
         output.writeInt64(2, timestamp_);
@@ -1715,9 +1719,9 @@ public final class Grpc {
       if (size != -1) return size;
 
       size = 0;
-      if (key_ != 0L) {
+      if (!key_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, key_);
+          .computeBytesSize(1, key_);
       }
       if (timestamp_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -1742,8 +1746,8 @@ public final class Grpc {
       }
       Grpc.SetRequest other = (Grpc.SetRequest) obj;
 
-      if (getKey()
-          != other.getKey()) return false;
+      if (!getKey()
+          .equals(other.getKey())) return false;
       if (getTimestamp()
           != other.getTimestamp()) return false;
       if (!getData()
@@ -1760,8 +1764,7 @@ public final class Grpc {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getKey());
+      hash = (53 * hash) + getKey().hashCode();
       hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTimestamp());
@@ -1900,7 +1903,7 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        key_ = 0L;
+        key_ = com.google.protobuf.ByteString.EMPTY;
 
         timestamp_ = 0L;
 
@@ -1983,7 +1986,7 @@ public final class Grpc {
 
       public Builder mergeFrom(Grpc.SetRequest other) {
         if (other == Grpc.SetRequest.getDefaultInstance()) return this;
-        if (other.getKey() != 0L) {
+        if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
           setKey(other.getKey());
         }
         if (other.getTimestamp() != 0L) {
@@ -2021,33 +2024,36 @@ public final class Grpc {
         return this;
       }
 
-      private long key_ ;
+      private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return The key.
        */
       @java.lang.Override
-      public long getKey() {
+      public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @param value The key to set.
        * @return This builder for chaining.
        */
-      public Builder setKey(long value) {
-        
+      public Builder setKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearKey() {
         
-        key_ = 0L;
+        key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
@@ -2902,10 +2908,10 @@ public final class Grpc {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
-    long getKey();
+    com.google.protobuf.ByteString getKey();
 
     /**
      * <code>int64 version = 2;</code>
@@ -2926,6 +2932,7 @@ public final class Grpc {
       super(builder);
     }
     private DeleteWithVersionRequest() {
+      key_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -2958,9 +2965,9 @@ public final class Grpc {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
 
-              key_ = input.readInt64();
+              key_ = input.readBytes();
               break;
             }
             case 16: {
@@ -3001,13 +3008,13 @@ public final class Grpc {
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
-    private long key_;
+    private com.google.protobuf.ByteString key_;
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
     @java.lang.Override
-    public long getKey() {
+    public com.google.protobuf.ByteString getKey() {
       return key_;
     }
 
@@ -3036,8 +3043,8 @@ public final class Grpc {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (key_ != 0L) {
-        output.writeInt64(1, key_);
+      if (!key_.isEmpty()) {
+        output.writeBytes(1, key_);
       }
       if (version_ != 0L) {
         output.writeInt64(2, version_);
@@ -3051,9 +3058,9 @@ public final class Grpc {
       if (size != -1) return size;
 
       size = 0;
-      if (key_ != 0L) {
+      if (!key_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, key_);
+          .computeBytesSize(1, key_);
       }
       if (version_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -3074,8 +3081,8 @@ public final class Grpc {
       }
       Grpc.DeleteWithVersionRequest other = (Grpc.DeleteWithVersionRequest) obj;
 
-      if (getKey()
-          != other.getKey()) return false;
+      if (!getKey()
+          .equals(other.getKey())) return false;
       if (getVersion()
           != other.getVersion()) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
@@ -3090,8 +3097,7 @@ public final class Grpc {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getKey());
+      hash = (53 * hash) + getKey().hashCode();
       hash = (37 * hash) + VERSION_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getVersion());
@@ -3228,7 +3234,7 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        key_ = 0L;
+        key_ = com.google.protobuf.ByteString.EMPTY;
 
         version_ = 0L;
 
@@ -3308,7 +3314,7 @@ public final class Grpc {
 
       public Builder mergeFrom(Grpc.DeleteWithVersionRequest other) {
         if (other == Grpc.DeleteWithVersionRequest.getDefaultInstance()) return this;
-        if (other.getKey() != 0L) {
+        if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
           setKey(other.getKey());
         }
         if (other.getVersion() != 0L) {
@@ -3343,33 +3349,36 @@ public final class Grpc {
         return this;
       }
 
-      private long key_ ;
+      private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return The key.
        */
       @java.lang.Override
-      public long getKey() {
+      public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @param value The key to set.
        * @return This builder for chaining.
        */
-      public Builder setKey(long value) {
-        
+      public Builder setKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearKey() {
         
-        key_ = 0L;
+        key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
@@ -3462,10 +3471,10 @@ public final class Grpc {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
-    long getKey();
+    com.google.protobuf.ByteString getKey();
   }
   /**
    * Protobuf type {@code KeyMessage}
@@ -3480,6 +3489,7 @@ public final class Grpc {
       super(builder);
     }
     private KeyMessage() {
+      key_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -3512,9 +3522,9 @@ public final class Grpc {
             case 0:
               done = true;
               break;
-            case 8: {
+            case 10: {
 
-              key_ = input.readInt64();
+              key_ = input.readBytes();
               break;
             }
             default: {
@@ -3550,13 +3560,13 @@ public final class Grpc {
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
-    private long key_;
+    private com.google.protobuf.ByteString key_;
     /**
-     * <code>int64 key = 1;</code>
+     * <code>bytes key = 1;</code>
      * @return The key.
      */
     @java.lang.Override
-    public long getKey() {
+    public com.google.protobuf.ByteString getKey() {
       return key_;
     }
 
@@ -3574,8 +3584,8 @@ public final class Grpc {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (key_ != 0L) {
-        output.writeInt64(1, key_);
+      if (!key_.isEmpty()) {
+        output.writeBytes(1, key_);
       }
       unknownFields.writeTo(output);
     }
@@ -3586,9 +3596,9 @@ public final class Grpc {
       if (size != -1) return size;
 
       size = 0;
-      if (key_ != 0L) {
+      if (!key_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, key_);
+          .computeBytesSize(1, key_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -3605,8 +3615,8 @@ public final class Grpc {
       }
       Grpc.KeyMessage other = (Grpc.KeyMessage) obj;
 
-      if (getKey()
-          != other.getKey()) return false;
+      if (!getKey()
+          .equals(other.getKey())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -3619,8 +3629,7 @@ public final class Grpc {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + KEY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getKey());
+      hash = (53 * hash) + getKey().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3754,7 +3763,7 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        key_ = 0L;
+        key_ = com.google.protobuf.ByteString.EMPTY;
 
         return this;
       }
@@ -3831,7 +3840,7 @@ public final class Grpc {
 
       public Builder mergeFrom(Grpc.KeyMessage other) {
         if (other == Grpc.KeyMessage.getDefaultInstance()) return this;
-        if (other.getKey() != 0L) {
+        if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
           setKey(other.getKey());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -3863,33 +3872,36 @@ public final class Grpc {
         return this;
       }
 
-      private long key_ ;
+      private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return The key.
        */
       @java.lang.Override
-      public long getKey() {
+      public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @param value The key to set.
        * @return This builder for chaining.
        */
-      public Builder setKey(long value) {
-        
+      public Builder setKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         key_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>int64 key = 1;</code>
+       * <code>bytes key = 1;</code>
        * @return This builder for chaining.
        */
       public Builder clearKey() {
         
-        key_ = 0L;
+        key_ = getDefaultInstance().getKey();
         onChanged();
         return this;
       }
@@ -3987,14 +3999,14 @@ public final class Grpc {
     java.lang.String[] descriptorData = {
       "\n\ngrpc.proto\"@\n\014ValueRequest\022\017\n\007version\030" +
       "\001 \001(\003\022\021\n\ttimestamp\030\002 \001(\003\022\014\n\004data\030\003 \001(\014\"O" +
-      "\n\021TestAndSetRequest\022\013\n\003key\030\001 \001(\003\022\034\n\005valu" +
+      "\n\021TestAndSetRequest\022\013\n\003key\030\001 \001(\014\022\034\n\005valu" +
       "e\030\002 \001(\0132\r.ValueRequest\022\017\n\007version\030\003 \001(\003\"" +
-      ":\n\nSetRequest\022\013\n\003key\030\001 \001(\003\022\021\n\ttimestamp\030" +
+      ":\n\nSetRequest\022\013\n\003key\030\001 \001(\014\022\021\n\ttimestamp\030" +
       "\002 \001(\003\022\014\n\004data\030\003 \001(\014\"@\n\010Response\022\026\n\001e\030\001 \001" +
       "(\0162\013.StatusCode\022\034\n\005value\030\002 \001(\0132\r.ValueRe" +
       "quest\"8\n\030DeleteWithVersionRequest\022\013\n\003key" +
-      "\030\001 \001(\003\022\017\n\007version\030\002 \001(\003\"\031\n\nKeyMessage\022\013\n" +
-      "\003key\030\001 \001(\003*@\n\nStatusCode\022\t\n\005ERROR\020\000\022\013\n\007S" +
+      "\030\001 \001(\014\022\017\n\007version\030\002 \001(\003\"\031\n\nKeyMessage\022\013\n" +
+      "\003key\030\001 \001(\014*@\n\nStatusCode\022\t\n\005ERROR\020\000\022\013\n\007S" +
       "UCCESS\020\001\022\014\n\010ERROR_NE\020\002\022\014\n\010ERROR_WV\020\0032\363\001\n" +
       "\013GrpcService\022$\n\010SetValue\022\013.SetRequest\032\t." +
       "Response\"\000\022$\n\010GetValue\022\013.KeyMessage\032\t.Re" +

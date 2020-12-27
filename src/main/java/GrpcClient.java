@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,13 +72,8 @@ public class GrpcClient {
             throw new IllegalArgumentException("Número de argumentos incorretos: "+ inputs.size());
         }
         String keyString = inputs.get(0);
-        Long key = null;
-        try{
-            key = Long.parseLong(keyString);
-        }
-        catch(NumberFormatException e){
-            throw new IllegalArgumentException("Formato incorreto da entrada 0");
-        }
+        BigInteger key = new BigInteger(ByteString.copyFrom(keyString,charset).toByteArray());
+        
         Grpc.Response response = getValue(key);
         if(response == null){
             return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
@@ -85,8 +81,8 @@ public class GrpcClient {
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
-    static Grpc.Response getValue(Long key){
-        Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(key).build();
+    static Grpc.Response getValue(BigInteger key){
+        Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(ByteString.copyFrom(key.toByteArray())).build();
         try{
             return blockingStub.getValue(request);
         }
@@ -105,13 +101,7 @@ public class GrpcClient {
         String keyString = inputs.get(0);
         String valueString = inputs.get(1);
         
-        Long key = null;
-        try{
-            key = Long.parseLong(keyString);
-        }
-        catch(NumberFormatException e){
-            throw new IllegalArgumentException("Formato incorreto da entrada 0");
-        }
+        BigInteger key = new BigInteger(ByteString.copyFrom(keyString,charset).toByteArray());
 
         ByteString value = ByteString.copyFrom(valueString, charset);
         long timestamp = (new Date()).getTime();
@@ -123,8 +113,8 @@ public class GrpcClient {
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
-    static Grpc.Response setValue(Long key, ByteString value, Long timestamp){
-        Grpc.SetRequest request = Grpc.SetRequest.newBuilder().setKey(key).setData(value).setTimestamp(timestamp).build();
+    static Grpc.Response setValue(BigInteger key, ByteString value, Long timestamp){
+        Grpc.SetRequest request = Grpc.SetRequest.newBuilder().setKey(ByteString.copyFrom(key.toByteArray())).setData(value).setTimestamp(timestamp).build();
         try{
             //System.out.println(request.toString());
             return blockingStub.setValue(request);
@@ -141,13 +131,8 @@ public class GrpcClient {
             throw new IllegalArgumentException("Número de argumentos incorretos: "+ inputs.size());
         }
         String keyString = inputs.get(0);
-        Long key = null;
-        try{
-            key = Long.parseLong(keyString);
-        }
-        catch(NumberFormatException e){
-            throw new IllegalArgumentException("Formato incorreto da entrada 0");
-        }
+        BigInteger key = new BigInteger(ByteString.copyFrom(keyString,charset).toByteArray());
+
         Grpc.Response response = delValue(key);
         if(response == null){
             return new ArrayList<String>(Arrays.asList("TIMEOUT"," "));
@@ -156,8 +141,8 @@ public class GrpcClient {
        
     }
 
-    static Grpc.Response delValue(Long key){
-        Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(key).build();
+    static Grpc.Response delValue(BigInteger key){
+        Grpc.KeyMessage request = Grpc.KeyMessage.newBuilder().setKey(ByteString.copyFrom(key.toByteArray())).build();
         try{
             return blockingStub.delValue(request);
         }
@@ -175,10 +160,9 @@ public class GrpcClient {
         String keyString = inputs.get(0);
         String versionString = inputs.get(1);
 
-        Long key = null;
+        BigInteger key = new BigInteger(ByteString.copyFrom(keyString,charset).toByteArray());
         Long version = null;
         try{
-            key = Long.parseLong(keyString);
             version = Long.parseLong(versionString);
         }
         catch(NumberFormatException e){
@@ -191,8 +175,8 @@ public class GrpcClient {
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
-    static Grpc.Response delValueWithVersion(Long key, Long version){
-        Grpc.DeleteWithVersionRequest request = Grpc.DeleteWithVersionRequest.newBuilder().setKey(key).setVersion(version).build();
+    static Grpc.Response delValueWithVersion(BigInteger key, Long version){
+        Grpc.DeleteWithVersionRequest request = Grpc.DeleteWithVersionRequest.newBuilder().setKey(ByteString.copyFrom(key.toByteArray())).setVersion(version).build();
         try{
             return blockingStub.delValueWithVersion(request);
         }
@@ -211,14 +195,13 @@ public class GrpcClient {
         String valueString = inputs.get(1);
         String versionString = inputs.get(2);
         
-        Long key = null;
+        BigInteger key = new BigInteger(ByteString.copyFrom(keyString,charset).toByteArray());
         Long version = null;
         try{
-            key = Long.parseLong(keyString);
             version = Long.parseLong(versionString);
         }
         catch(NumberFormatException e){
-            throw new IllegalArgumentException("Formato incorreto da entrada 0 ou 2");
+            throw new IllegalArgumentException("Formato incorreto da entrada 2");
         }
 
         ByteString value = ByteString.copyFrom(valueString, charset);
@@ -231,8 +214,8 @@ public class GrpcClient {
         return new ArrayList<String>(Arrays.asList(response.getE().toString(),parseValueRequest(response.getValue())));
     }
 
-    static Grpc.Response testAndSetValue(Long key, Long version, Long timestamp, ByteString value){
-        Grpc.TestAndSetRequest request = Grpc.TestAndSetRequest.newBuilder().setKey(key)
+    static Grpc.Response testAndSetValue(BigInteger key, Long version, Long timestamp, ByteString value){
+        Grpc.TestAndSetRequest request = Grpc.TestAndSetRequest.newBuilder().setKey(ByteString.copyFrom(key.toByteArray()))
             .setValue(Grpc.ValueRequest.newBuilder().setVersion(version+1L).setTimestamp(timestamp).setData(value).build())
             .setVersion(version).build();
         try{

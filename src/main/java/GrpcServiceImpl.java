@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +50,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
             sendResponse(responseObserver, Grpc.StatusCode.ERROR, null);
             return;
         }
-        ValueModel oldValue = values.putIfAbsent(request.getKey(),
+        ValueModel oldValue = values.putIfAbsent(new BigInteger(request.getKey().toByteArray()),
                 new ValueModel(1L, request.getTimestamp(), request.getData()));
         changedHashMap();
         Grpc.ValueRequest returnValue = null;
@@ -69,7 +70,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
 
         // if(!verifyAvailability()) return; Disponível para gets!
         try {
-            ValueModel value = values.get(request.getKey());
+            ValueModel value = values.get(new BigInteger(request.getKey().toByteArray()));
             if (value == null) {
                 status = Grpc.StatusCode.ERROR;
             } else {
@@ -89,7 +90,7 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
             sendResponse(responseObserver, Grpc.StatusCode.ERROR, null);
             return;
         }
-        ValueModel valueRemoved = values.remove(request.getKey());
+        ValueModel valueRemoved = values.remove(new BigInteger(request.getKey().toByteArray()));
         changedHashMap();
         Grpc.ValueRequest returnValue = null;
 
@@ -111,12 +112,12 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
             sendResponse(responseObserver, Grpc.StatusCode.ERROR, null);
             return;
         }
-        ValueModel oldValue = values.get(request.getKey());
+        ValueModel oldValue = values.get(new BigInteger(request.getKey().toByteArray()));
 
         if (oldValue != null) {
             returnValue = oldValue.toGrpc();
             if (oldValue.getVersion() == request.getVersion()) {
-                values.remove(request.getKey());
+                values.remove(new BigInteger(request.getKey().toByteArray()));
                 status = Grpc.StatusCode.SUCCESS;
                 changedHashMap();
             } else {
@@ -136,12 +137,12 @@ public class GrpcServiceImpl extends GrpcServiceGrpc.GrpcServiceImplBase impleme
             sendResponse(responseObserver, Grpc.StatusCode.ERROR, null);
             return;
         }
-        ValueModel oldValue = values.get(request.getKey());
+        ValueModel oldValue = values.get(new BigInteger(request.getKey().toByteArray()));
 
         if (oldValue != null) {
             returnValue = oldValue.toGrpc();
             if (oldValue.getVersion() == request.getVersion()) {
-                values.put(request.getKey(), new ValueModel(request.getValue()));
+                values.put(new BigInteger(request.getKey().toByteArray()), new ValueModel(request.getValue()));
                 status = Grpc.StatusCode.SUCCESS;
                 changedHashMap();
             } else {
