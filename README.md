@@ -1,4 +1,6 @@
-# Trabalho de Sistemas Distribuídos
+# Trabalho de Sistemas Distribuídos - BD com gRPC e Ratis
+
+Construção de um Banco de dados com consenso distribuído e tolerância a falhas utilizando uma implementação Raft em Java chamada Ratis e comunicação em gRPC.
 
 Grupo:<br>
 Vinícius Pereira Duarte<br>
